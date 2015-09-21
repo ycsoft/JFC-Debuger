@@ -25,5 +25,5 @@ HEADERS  += jfcwindow.h \
 
 FORMS    += jfcwindow.ui
 
-RESOURCES += \
-    res.qrc
+#RESOURCES += \
+#    res.qrc
