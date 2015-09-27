@@ -14,8 +14,11 @@ public:
     explicit JFCWindow(QWidget *parent = 0);
     ~JFCWindow();
 
+    static QHFWebView *getWeb();
+
 public slots:
     void            registerObj();
+    void            loadFinish(bool);
 protected:
     void            setUpUi();
 
@@ -23,7 +26,7 @@ protected:
     void            mouseReleaseEvent(QMouseEvent *evt);
     void            mouseMoveEvent(QMouseEvent *evt);
 private:
-    QHFWebView      *m_web;
+    static QHFWebView      *m_web;
     QHFWebView      *m_nav;
 
     bool            m_pressed;

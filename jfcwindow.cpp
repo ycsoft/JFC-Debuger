@@ -1,8 +1,11 @@
 ﻿#include "jfcwindow.h"
 #include "core/qhfwebview.h"
+#include "command/qdevicecommand.h"
 
 #include <QVBoxLayout>
 #include <QWebFrame>
+
+QHFWebView * JFCWindow::m_web = NULL;
 
 JFCWindow::JFCWindow(QWidget *parent) :
     QWidget(parent)
@@ -17,28 +20,35 @@ JFCWindow::JFCWindow(QWidget *parent) :
 JFCWindow::~JFCWindow()
 {
 }
+QHFWebView * JFCWindow::getWeb()
+{
+    return m_web;
+}
 
 void JFCWindow::setUpUi()
 {
     QHBoxLayout *vlay = new QHBoxLayout(this);
 
+
     m_web = new QHFWebView(this);
     m_web->load(QUrl("ui/connectdevice.html"));
-//    m_nav = new QHFWebView(this);
-//    m_nav->load(QUrl("ui/LeftNav.html"));
-//    m_nav->setMaximumWidth(150);
-//    m_nav->setMinimumWidth(150);
 
     connect(m_web->page()->mainFrame(),SIGNAL(javaScriptWindowObjectCleared()),this,SLOT(registerObj()));
+    connect(m_web,SIGNAL(loadFinished(bool)),this,SLOT(loadFinish(bool)));
+
     vlay->setContentsMargins(0,0,0,0);
     vlay->setSpacing(0);
-//    vlay->addWidget(m_nav);
     vlay->addWidget(m_web);
 }
 
 void JFCWindow::registerObj()
 {
     m_web->page()->mainFrame()->addToJavaScriptWindowObject("JFCWin",this);
+}
+void JFCWindow::loadFinish(bool)
+{
+    Cmd::Command   cmd;
+    cmd.data = (byte*)("Hello");
 }
 
 void JFCWindow::mousePressEvent(QMouseEvent *evt)

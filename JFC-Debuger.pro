@@ -17,13 +17,15 @@ SOURCES += main.cpp\
     core/qhfwebview.cpp \
     jsCore/qjscore.cpp \
     command/qdevicecommand.cpp \
-    core/hfpgsql.cpp
+    core/hfpgsql.cpp \
+    command/qparse.cpp
 
 HEADERS  += jfcwindow.h \
     core/qhfwebview.h \
     jsCore/qjscore.h \
     command/qdevicecommand.h \
-    core/hfpgsql.h
+    core/hfpgsql.h \
+    command/qparse.h
 
 FORMS    += jfcwindow.ui
 
