@@ -1,4 +1,5 @@
 ﻿#include "qjscore.h"
+#include "command/qdevicecommand.h"
 
 #include <QFile>
 #include <QMessageBox>
@@ -8,7 +9,7 @@
 
 QJSCore::QJSCore(QObject *parent) : QObject(parent)
 {
-
+    m_dev = new QDeviceCommand(this);
 }
 
 
@@ -75,4 +76,34 @@ void QJSCore::open(const QString &path, const QStringList &arglist)
 void QJSCore::exit()
 {
     qApp->exit(0);
+}
+
+void QJSCore::connectDev(QString host, int port)
+{
+    qDebug()<<LOCAL("连接设备。。。")<<"IP:"<<host<<" port:"<<port;
+
+    m_dev->connectDev(host, port);
+}
+
+void QJSCore::BaseAngle(QString angle)
+{
+    qDebug()<<LOCAL("调整基准角。。。。。。")<<angle;
+    byte head[2] = BASE_TYPE;
+    Cmd::Command  cmd = m_dev->createCommand(head,(byte*)angle.toLocal8Bit().data());
+    m_dev->sendCmd(cmd);
+}
+void QJSCore::NegAngle(QString angle)
+{
+    qDebug()<<LOCAL("调整NECK角。。。。。。")<<angle;
+    byte head[2] = NEG_TYPE;
+    Cmd::Command  cmd = m_dev->createCommand(head,(byte*)angle.toLocal8Bit().data());
+    m_dev->sendCmd(cmd);
+}
+
+void QJSCore::PicAcq()
+{
+    qDebug()<<LOCAL("采集图像。。。。。。");
+    byte head[2] = PIC_ACQ;
+    Cmd::Command cmd = m_dev->createCommand(head,NULL);
+    m_dev->sendCmd(cmd);
 }
