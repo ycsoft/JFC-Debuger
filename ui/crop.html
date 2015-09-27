@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+		<script src="res/jquery.min.js"></script>
+		<script src="res/jquery.Jcrop.js"></script>
+		<link rel="stylesheet" href="res/jquery.Jcrop.css" type="text/css" />
+		<link rel="stylesheet" href="res/demos.css" type="text/css" />
+</head>
+		<script language="Javascript">
+
+			// Remember to invoke within jQuery(window).load(...)
+			// If you don't, Jcrop may not initialize properly
+			jQuery(document).ready(function(){
+
+				jQuery('#cropbox').Jcrop({
+					onChange: showCoords,
+					onSelect: showCoords
+				});
+
+			});
+
+			// Our simple event handler, called from onChange and onSelect
+			// event handlers, as per the Jcrop invocation above
+			function showCoords(c)
+			{
+			};
+
+		</script>
+<style type="text/css">
+html,body {
+	margin:0px;
+	overflow:hidden;
+    /*FILTER: progid:DXImageTransform.Microsoft.Gradient(gradientType=0,startColorStr=##15A216,endColorStr=#fafafa);  
+    background:-moz-linear-gradient(top,#15A216,#fafafa); 
+    background:-webkit-gradient(linear, 0% 0%, 0% 100%,from(#066), to(#fafafa)); 
+    background-image: -webkit-gradient(linear,left bottom,left top,color-start(0, #15A216),color-stop(1, #fafafa));
+    filter:  progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#15A216', endColorstr='#fafafa'); 
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#15A216', endColorstr='#fafafa')";*/
+}
+div.label{
+	position:relative;
+	width:70px;
+	text-align:left;
+	display:inline-block;
+	font:"Times New Roman", Times, serif;
+	font-weight:bold;
+	font-size:12px;
+}
+div.row
+{
+	 position:relative;padding-top:10px;
+}
+input[type=button]{
+	position:relative;
+	display:inline-block;
+	width:60px;
+	left:40px;	
+	margin-right:5px;
+	font:"Times New Roman", Times, serif;
+	font-size:12px;
+}
+input[class=cord]{
+	display:inline-block;
+	width:40px;
+	margin:10px 10px 0px 0px;
+}
+#content{
+	position:absolute;
+	left:20%;
+	width:300px;
+	height:100%;
+	margin:100px 0px 0px 100px;
+}
+
+.radus{
+	position:relative;
+	border-radius:4px;
+	width:100%;
+	height:30px;
+	left:7px;
+	font-size:12px;
+	display:block;
+	background-color:#FF8000;
+	cursor:pointer;
+}
+.radus2{
+	position:relative;
+	border-radius:4px;
+	height:30px;
+	font-size:12px;
+	left:40px;
+	display:block;
+	background-color:#FF8000;
+	cursor:pointer;
+}
+div.nav{
+	position:absolute;
+	left:0px;
+	top:0px;
+	padding-top:10px;
+	padding-right:5px;
+	width:20%;
+	height:100%;
+	background-color:#000;
+}
+.navbutton{
+	position:relative;
+	border-radius:4px;
+	color:#FFF;
+	font-size:14px;
+	font-weight:bold;
+	width:95%;
+	padding:10px 8px 10px 0px;
+}
+img.icon{
+	position:relative;
+	padding:0px 0px 10px 0px;
+	top:8px;
+	width:35px;
+	height:35px;
+	display:block;
+}
+div.imgproc{
+	position:absolute;
+	left:21%;
+	/*width:300px;*/
+	height:100%;	
+}
+button.cut{
+	position:relative;
+	border-radius:4px;
+	height:30px;
+	width:100px;
+	font-size:12px;
+	display:block;
+	background-color:#FF8000;
+	cursor:pointer;
+	display:inline-block;
+}
+</style>
+<body>
+<div class="imgproc" align="center">
+<img src="res/img/test.png" id="cropbox" />
+<div style="position:relative; width:450px; margin-bottom:20px">
+<button class="cut pure-button">手动截图</button>
+<hr style="position:relative; display:inline-block; margin-right:30px;width:1px; height:20px; top:15px; left:5px" />
+<div class="label">截图间隔</div>
+<input type="text" id="interval" style=" position:relative; width:50px; left:-20px;display:inline-block"></input>
+<button class="cut pure-button">连续截图</button>
+</div>
+<div style="width:450px">
+<strong>X:</strong><input type="text" class="cord" id="x"></input><strong>Y:</strong><input type="text" class="cord" id="y"></input>
+<strong>Width:</strong><input type="text" class="cord" id="w"></input><strong>Height:</strong><input type="text" class="cord" id="h"></input>
+</div>
+</div>
+</body>
+</html>

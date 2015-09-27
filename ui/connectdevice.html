@@ -57,7 +57,7 @@
 		</script>
 <script type="text/javascript">
 $(document).ready(function(e) {
-	$("#page-connect").css("display","block");
+	$("#page-connect").css("display","none");
 	$("#page-degree").css("display","none");
 	$("#page-save").css("display","none");
 	$(".imgproc").css("display","block");
@@ -96,7 +96,10 @@ $(document).ready(function(e) {
     });
 		
     $("#connectdev").click(function(e) {
-        JFCWin.close();
+        var host = $("#ip").val();
+		var port = $("#port").val();
+		port = parseInt(port);
+		Qt.connectDev(host,port);
     });
 	$("#closebtn").click(function(e) {
         JFCWin.close();
@@ -112,6 +115,36 @@ $(document).ready(function(e) {
 	$("#closebtn").mouseout(function(e) {
         $(this).attr("id","closebtn");
 	});	
+	
+	setDevCode('未连接');
+	
+	//BASE角度
+	$('#basebutton').click(function(e) {
+        var base = $('#basedeg').val();
+		if ( base == '')
+		{
+			return;
+		}else
+		{
+			Qt.BaseAngle(base);
+		}
+    });
+	//Neg角度
+	$('#negbutton').click(function(e) {
+        var neg = $('#negdeg').val();
+		if ( neg == '')
+		{
+			return;	
+		}else
+		{
+			Qt.NegAngle(neg);
+		}
+    });
+	//图片采集
+	$('#manul').click(function(e) {
+        Qt.PicAcq();
+    });
+	
 });
 function ShowCords(c)
 {
@@ -119,6 +152,15 @@ function ShowCords(c)
 				jQuery('#y').val(c.y);
 				jQuery('#w').val(c.w);
 				jQuery('#h').val(c.h);
+}
+
+function setDevCode( code )
+{
+	$('header>p').html('设备编号: ' + code);	
+}
+function setImg( src )
+{
+	$('.imgproc img').attr('src',src);	
 }
 </script>
 </head>
@@ -269,10 +311,10 @@ button.cut{
 </div>
 
 <div id="page-degree">
-<div class="row"><div class="label">base角度</div><input type="text" id="ip"></input></div>
-<div class="row" position:relative;padding-top:10px; left:-10px"><button class=" radus2 pure-button" value="运行到角度">运行到角度</button></div>
-<div class="row"><div class="label">nect角度</div><input type="text" id="ip"></input></div>
-<div class="row" position:relative;padding-top:10px; left:-10px"><button class=" radus2 pure-button" value="运行到角度">运行到角度</button></div>
+<div class="row"><div class="label">base角度</div><input type="text" id="basedeg"></input></div>
+<div class="row" style="position:relative;padding-top:10px; left:10px"><button id="basebutton" class=" radus2 pure-button" value="运行到角度">运行到角度</button></div>
+<div class="row"><div class="label">nect角度</div><input type="text" id="negdeg"></input></div>
+<div class="row" style="position:relative;padding-top:10px; left:10px"><button id="negbutton" class=" radus2 pure-button" value="运行到角度">运行到角度</button></div>
 </div>
 
 <div id="page-save">
@@ -298,11 +340,11 @@ button.cut{
 <div class="imgproc" align="center">
 <img src="res/img/test.png" id="cropbox" />
 <div style="position:relative; width:550px; margin-bottom:20px">
-<button class="cut pure-button">手动截图</button>
+<button class="cut pure-button" id="manul">手动截图</button>
 <hr style="position:relative; display:inline-block; margin-right:30px;width:1px; height:20px; top:15px; left:5px" />
 <div class="label">截图间隔</div>
 <input type="text" id="interval" style=" position:relative; width:50px; left:-20px;display:inline-block"></input>
-<button class="cut pure-button">连续截图</button>
+<button class="cut pure-button" id="auto">连续截图</button>
 <div style="width:100px; height:100px;overflow:hidden; display:inline-block">
 <img src="res/img/test.png" id="preview"/>
 </div>
