@@ -9,6 +9,10 @@ class QHFWebView : public QWebView
     Q_OBJECT
 public:
     explicit QHFWebView(QWidget *parent = 0);
+    ~QHFWebView()
+    {
+
+    }
 
     void     setTransparent( bool );
     void     load(const QUrl& url);
