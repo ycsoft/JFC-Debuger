@@ -24,6 +24,7 @@ void QDeviceCommand::connectDev(QString host, int port)
 void QDeviceCommand::connected()
 {
     QMessageBox::information(0,LOCAL("JFC"),LOCAL("设备连接成功"),0);
+    setSerial(LOCAL("已连接"));
 }
 
 void QDeviceCommand::onRead()
@@ -83,7 +84,7 @@ Cmd::Command& QDeviceCommand::createCommand(byte cmd[], byte *data)
 
 void QDeviceCommand::setSerial(QString s)
 {
-    QString js = QString("setDevCode('%s')").arg(s);
+    QString js = QString("setDevCode('%1')").arg(s);
     JFCWindow::getWeb()->page()->mainFrame()->evaluateJavaScript(js);
 }
 
