@@ -13,6 +13,7 @@ QDeviceCommand::QDeviceCommand(QObject *parent) : QObject(parent)
     m_sock = new QTcpSocket(this);
 
     connect(m_sock,SIGNAL(connected()),this,SLOT(connected()));
+    connect(m_sock,SIGNAL(readyRead()),this,SLOT(onRead()));
 }
 
 void QDeviceCommand::connectDev(QString host, int port)
