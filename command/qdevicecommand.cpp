@@ -27,10 +27,36 @@ void QDeviceCommand::connected()
     setSerial(LOCAL("已连接"));
 }
 
+Cmd::Command & QDeviceCommand::cmdFromRawData(const char *buf)
+{
+    static  Cmd::Command     cmd;
+    int     dlen        = 0;
+    const   char *p     = buf + 2;
+    if ( NULL != cmd.data )
+    {
+        delete cmd.data;
+        cmd.data = NULL;
+    }
+
+    cmd.cmd[0] = *(p++);
+    cmd.cmd[1] = *(p++);
+    cmd.dataLen[0] = *(p++);
+    cmd.dataLen[1] = *(p++);
+    dlen = cmd.dataLen[0] << 8 | cmd.dataLen[1];
+
+    cmd.data = new byte[dlen];
+    memcpy(cmd.data,(byte*)p,dlen);
+    p += dlen;
+    cmd.cs = *(p++);
+    cmd.end[0] = *(p++);
+    cmd.end[1] = *p;
+    return cmd;
+}
+
 void QDeviceCommand::onRead()
 {
-    char* data = m_sock->readAll().data();
-    Cmd::Command *cmd = reinterpret_cast<Cmd::Command*>(data);
+    char *data = m_sock->readAll().data();
+    Cmd::Command *cmd = &(cmdFromRawData(data));
     int type = QParse::ref().getCmdType(*cmd);
 
     switch ( type )
@@ -60,25 +86,25 @@ void QDeviceCommand::onRead()
     }
 }
 
-Cmd::Command& QDeviceCommand::createCommand(byte cmd[], byte *data)
+Cmd::Command& QDeviceCommand::createCommand(byte cmd[], byte *data, int len)
 {
     static Cmd::Command  command;
-    quint16 len = 0 ;
-    if ( data == NULL )
-    {
-        len = 0;
-    }else
-    {
-        len = strlen(reinterpret_cast<char*>(data));
-    }
 
     command.cmd[0] = cmd[0];
     command.cmd[1] = cmd[1];
     command.dataLen[0] = len >> 8;
     command.dataLen[1] = len & 0x00FF;
-    //注意，发送成功前保证data内存数据有效
-    command.data = data;
 
+    if ( NULL != command.data )
+    {
+        delete command.data;
+        command.data = NULL;
+    }
+    if ( len > 0 )
+    {
+        command.data = new byte[len];
+        memcpy(command.data,data,len);
+    }
     return command;
 }
 
@@ -88,10 +114,28 @@ void QDeviceCommand::setSerial(QString s)
     JFCWindow::getWeb()->page()->mainFrame()->evaluateJavaScript(js);
 }
 
+void QDeviceCommand::copyCmd(char *buf, const Cmd::Command &cmd)
+{
+    int len = cmd.dataLen[0] << 8 | cmd.dataLen[1];
+    if ( NULL == buf )
+    {
+        return;
+    }
+    memcpy(buf,cmd.head,2);
+    buf += 2;
+    memcpy(buf,cmd.cmd,2);
+    buf += 2;
+    memcpy(buf,cmd.dataLen,2);
+    buf += 2;
+    memcpy(buf,cmd.data,len);
+    buf += len;
+    *(buf++) = cmd.cs;
+    memcpy(buf,cmd.end,2);
+}
+
 void QDeviceCommand::sendCmd(const Cmd::Command &cmd)
 {
     char buf[BUFFER_LEN] = {0};
-    int  len =  CmdLen(&cmd);
-    memcpy(buf,&cmd, len);
-    m_sock->write(buf,len);
+    copyCmd(buf,cmd);
+    m_sock->write(buf,cmd.dataLen[0] << 8 | cmd.dataLen[1]);
 }

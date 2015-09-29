@@ -11,7 +11,6 @@ QString QParse::getSerial(const Cmd::Command & cmd)
 {
     char data[13] = {0};
     strncpy(data,reinterpret_cast<char*>(cmd.data),SERIAL_LEN);
-
     return tr(data);
 }
 

@@ -12,8 +12,8 @@
 
 #define  CmdLen( cmd )      ( \
                                 STABLE_LEN + \
-                                ((cmd)->dataLen[0] << 8 ) | \
-                                (((cmd)->dataLen[1] & 0x00ff)) \
+                                ((cmd)->dataLen[0] << 8  | \
+                                (cmd)->dataLen[1]) \
                             )
 
 
@@ -48,8 +48,17 @@ struct Command
         head[0] = 0x7F;
         head[1] = 0x55;
         cs      = 0x00;
+        data    = NULL;
         end[0]  = 0xBE;
         end[1]  = 0xEF;
+    }
+    ~Command()
+    {
+        if ( NULL != data )
+        {
+            delete [] data;
+            data = NULL;
+        }
     }
 };
 /*
@@ -81,6 +90,8 @@ class QDeviceCommand : public QObject
     Q_OBJECT
 public:
     explicit        QDeviceCommand(QObject *parent = 0);
+
+    Cmd::Command    &cmdFromRawData( const char *buf );
     ~QDeviceCommand() {}
     ///
     /// \brief createCommand
@@ -88,7 +99,7 @@ public:
     /// \param data: 协议中的数据内容
     /// \return
     ///
-    Cmd::Command &  createCommand(byte cmd[2],byte *data);
+    Cmd::Command &  createCommand(byte cmd[2],byte *data, int len = 0);
 
     ///
     /// \brief connectDev
@@ -102,6 +113,7 @@ public:
     /// \param cmd
     ///
     void            sendCmd(const Cmd::Command &cmd);
+    void            copyCmd(char *buf, const Cmd::Command &cmd);
 signals:
 
 public slots:
