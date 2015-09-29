@@ -94,12 +94,16 @@ $(document).ready(function(e) {
 		$("#page-save").css("display","block");
 		$(".imgproc").css("display","none");  
     });
-		
+	//连接设备
     $("#connectdev").click(function(e) {
         var host = $("#ip").val();
 		var port = $("#port").val();
 		port = parseInt(port);
 		Qt.connectDev(host,port);
+    });
+	//断开连接
+	$('#closedev').click(function(e) {
+        Qt.disConnect();
     });
 	$("#closebtn").click(function(e) {
         JFCWin.close();
@@ -307,7 +311,7 @@ button.cut{
 <div class="row"><div class="label">设备IP</div><input type="text" id="ip"></input></div>
 <div class="row"><div class="label">设备端口</div><input type="text" id="port"></input></div>
 <div class="row">
-<input id="connectdev" type="button" value="连接"/> <input id="exit" type="button" value="退出" /></div>
+<input id="connectdev" type="button" value="连接"/><input id="closedev" type="button" value="断开"/> <input id="exit" type="button" value="退出" /></div>
 </div>
 
 <div id="page-degree">
