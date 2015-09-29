@@ -90,10 +90,15 @@ void QJSCore::connectDev(QString host, int port)
 void QJSCore::BaseAngle(QString angle)
 {
     qDebug()<<LOCAL("调整基准角。。。。。。")<<angle;
-    int len = angle.length();
-    byte head[2] = BASE_TYPE;
 
-    Cmd::Command  cmd = m_dev->createCommand(head,(byte*)angle.toLocal8Bit().data(),len);
+    byte head[2] = BASE_TYPE;
+    char cangle[7];
+    memset(cangle,'0',7);
+    float fang = atof(angle.toLocal8Bit().data());
+    sprintf(cangle,"%7.3f",fang);
+
+    angle = QString(cangle).replace(" ","0");
+    Cmd::Command  cmd = m_dev->createCommand(head,(byte*)angle.toLocal8Bit().data(),7);
 
     m_dev->sendCmd(cmd);
 }
@@ -102,7 +107,13 @@ void QJSCore::NegAngle(QString angle)
     qDebug()<<LOCAL("调整NECK角。。。。。。")<<angle;
     byte head[2] = NEG_TYPE;
     int  len = angle.length();
-    Cmd::Command  cmd = m_dev->createCommand(head,(byte*)angle.toLocal8Bit().data(),len);
+    char cangle[7];
+    memset(cangle,'0',7);
+    float fang = atof(angle.toLocal8Bit().data());
+    sprintf(cangle,"%7.3",fang);
+
+    angle = QString(cangle).replace(" ","0");
+    Cmd::Command  cmd = m_dev->createCommand(head,(byte*)angle.toLocal8Bit().data(),7);
     m_dev->sendCmd(cmd);
 }
 
