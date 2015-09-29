@@ -110,8 +110,8 @@ void QDeviceCommand::onRead()
         file.open(QIODevice::WriteOnly);
 
         alldata.append(datalen);
-        int len = datalen[0] << 24 | datalen[1] << 16
-                  | datalen[2] <<8 | datalen[3];
+       quint32 len = datalen[0] << 24 | datalen[1] << 16 & 0x00ff0000
+                  | datalen[2] <<8  & 0x0000ff00 | datalen[3] & 0x000000ff;
         int rd  = m_sock->read(buf,len);
 
         alldata.append(buf,rd);
