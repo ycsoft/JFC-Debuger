@@ -117,6 +117,7 @@ void QDeviceCommand::onRead()
         alldata.append(buf,rd);
         while ( rd < len)
         {
+            m_sock->waitForReadyRead();
             int it = m_sock->read(buf,len - rd);
             rd += it;
             alldata.append(buf,it);
@@ -175,13 +176,11 @@ void QDeviceCommand::onRead()
 Cmd::Command& QDeviceCommand::createCommand(byte cmd[], byte *data, int len)
 {
     static Cmd::Command  command;
-//    static byte *pdel = NULL;
 
     command.cmd[0] = cmd[0];
     command.cmd[1] = cmd[1];
     command.dataLen[0] = (len+ SERIAL_LEN) >> 8;
     command.dataLen[1] = (len+ SERIAL_LEN) & 0x00FF;
-
 
     if ( NULL != command.data )
     {
@@ -191,7 +190,6 @@ Cmd::Command& QDeviceCommand::createCommand(byte cmd[], byte *data, int len)
     if ( len >= 0 )
     {
         command.data = new byte[len + SERIAL_LEN];
-//        pdel = command.data;
         memset(command.data,0,len+SERIAL_LEN);
         memcpy(command.data,m_seria.toLocal8Bit().data(),SERIAL_LEN);
         if ( len > 0)
