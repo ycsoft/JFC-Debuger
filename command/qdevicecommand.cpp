@@ -75,13 +75,18 @@ void QDeviceCommand::onRead()
         int rd  = m_sock->read(buf,len);
         while ( rd < len)
         {
-            m_sock->waitForReadyRead();
-            int it = m_sock->read(buf,len - rd);
+            int it = m_sock->read(buf+rd,len - rd);
             rd += it;
-            alldata.append(buf);
-            memset(buf,0,SOCK_BUF);
+
         }
-        alldata.append( m_sock->read(3) );
+        alldata.append(buf,len);
+        memset(buf,0,SOCK_BUF);
+        rd = m_sock->read(buf,3);
+        while ( rd < 3 )
+        {
+            rd += m_sock->read(buf+rd,3-rd);
+        }
+        alldata.append( buf,3 );
         //处理接收到的所有数据
         Cmd::Command *cmd = &(cmdFromRawData(alldata.data()));
         int type = QParse::ref().getCmdType(*cmd);
@@ -98,6 +103,7 @@ void QDeviceCommand::onRead()
     }else
     {
 
+        int pic_offset = 34;
         QByteArray datalen = m_sock->read(4);
         char buf[SOCK_BUF] = {0};
         QFile file("ui/pic.jpg");
@@ -106,22 +112,25 @@ void QDeviceCommand::onRead()
         alldata.append(datalen);
         int len = datalen[0] << 24 | datalen[1] << 16
                   | datalen[2] <<8 | datalen[3];
-        int rd  = 0;
+        int rd  = m_sock->read(buf,len);
+
+        alldata.append(buf,rd);
         while ( rd < len)
         {
             int it = m_sock->read(buf,len - rd);
-            m_sock->waitForReadyRead();
             rd += it;
-            alldata.append(buf);
-            file.write(buf,it);
+            alldata.append(buf,it);
             memset(buf,0,SOCK_BUF);
         }
+        file.write(alldata.data() + pic_offset,len - 26);
         file.close();
+        memset(buf,0,SOCK_BUF);
         rd = m_sock->read(buf,3);
         if ( rd < 3 )
         {
-            rd += m_sock->read(buf,3-rd);
+            rd += m_sock->read(buf+rd,3-rd);
         }
+        alldata.append(buf,3);
         QString js = QString("setImg('%1')").arg("pic.jpg");
         JFCWindow::getWeb()->page()->mainFrame()->evaluateJavaScript(js);
     }
