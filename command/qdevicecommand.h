@@ -28,6 +28,8 @@
 
 #pragma pack(1)
 
+class QNetWork;
+
 typedef unsigned char byte;
 
 namespace Cmd {
@@ -132,6 +134,7 @@ private:
     void            setSerial(QString s);
 
     QString         m_seria;
+    QNetWork        *m_net;
 };
 
 #endif // QDEVICECOMMAND_H

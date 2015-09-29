@@ -1,6 +1,7 @@
 ﻿#include "qdevicecommand.h"
 #include "qparse.h"
 #include "jfcwindow.h"
+#include "net/qnetwork.h"
 #include "core/qhfwebview.h"
 
 #include <QFile>
@@ -11,6 +12,8 @@
 QDeviceCommand::QDeviceCommand(QObject *parent) : QObject(parent)
 {
     m_sock = new QTcpSocket(this);
+
+    m_net = new QNetWork(this,m_sock);
 
     connect(m_sock,SIGNAL(connected()),this,SLOT(connected()));
     connect(m_sock,SIGNAL(readyRead()),this,SLOT(onRead()));
@@ -55,121 +58,10 @@ Cmd::Command & QDeviceCommand::cmdFromRawData(const char *buf)
 
 void QDeviceCommand::onRead()
 {
-    QByteArray  alldata;
-
-    QByteArray  head    =   m_sock->read(4);
-    byte        type[2] =   {0x00,0x00};
-
-    type[0] = (byte)head[2];
-    type[1] = (byte)head[3];
-
-    alldata.append(head);
-
-    if ( type[0] == 0x00 || ( type[0] == 0x40 && type[1] == 0x00) )
-    {
-        QByteArray datalen = m_sock->read(2);
-        char buf[SOCK_BUF] = {0};
-
-        alldata.append(datalen);
-        int len = datalen[0] << 8 | datalen[1];
-        int rd  = m_sock->read(buf,len);
-        while ( rd < len)
-        {
-            int it = m_sock->read(buf+rd,len - rd);
-            rd += it;
-
-        }
-        alldata.append(buf,len);
-        memset(buf,0,SOCK_BUF);
-        rd = m_sock->read(buf,3);
-        while ( rd < 3 )
-        {
-            rd += m_sock->read(buf+rd,3-rd);
-        }
-        alldata.append( buf,3 );
-        //处理接收到的所有数据
-        Cmd::Command *cmd = &(cmdFromRawData(alldata.data()));
-        int type = QParse::ref().getCmdType(*cmd);
-
-        if( type == QParse::SerialType )
-        {
-                QString seria = QParse::ref().getSerial(*cmd);
-
-                m_seria = seria;
-                qDebug()<<"Device Code:"<<seria;
-                setSerial(seria);
-        }
-
-    }else
-    {
-
-        int pic_offset = 34;
-        QByteArray datalen = m_sock->read(4);
-        char buf[SOCK_BUF] = {0};
-        QFile file("ui/pic.jpg");
-        file.open(QIODevice::WriteOnly);
-
-        alldata.append(datalen);
-       quint32 len = datalen[0] << 24 | datalen[1] << 16 & 0x00ff0000
-                  | datalen[2] <<8  & 0x0000ff00 | datalen[3] & 0x000000ff;
-        int rd  = m_sock->read(buf,SOCK_BUF);
-        alldata.append(buf,rd);
-        while ( rd < len)
-        {
-            m_sock->waitForReadyRead();
-            int it = m_sock->read(buf,SOCK_BUF);
-            rd += it;
-            alldata.append(buf,it);
-            memset(buf,0,SOCK_BUF);
-        }
-        file.write(alldata.data() + pic_offset,len - 26);
-        file.close();
-        memset(buf,0,SOCK_BUF);
-        rd = m_sock->read(buf,3);
-        if ( rd < 3 )
-        {
-            rd += m_sock->read(buf+rd,3-rd);
-        }
-        alldata.append(buf,3);
-        QString js = QString("setImg('%1')").arg("pic.jpg");
-        JFCWindow::getWeb()->page()->mainFrame()->evaluateJavaScript(js);
-    }
-
-
-/*
-    char *data = m_sock->readAll().data();
-    Cmd::Command *cmd = &(cmdFromRawData(data));
-    int type = QParse::ref().getCmdType(*cmd);
-
-    switch ( type )
-    {
-        case QParse::SerialType:
-        {
-            QString seria = QParse::ref().getSerial(*cmd);
-
-            m_seria = seria;
-            qDebug()<<"Device Code:"<<seria;
-            setSerial(seria);
-            break;
-        }
-
-        case QParse::PicData:
-        {
-            char p[4] = {0};
-            int  len = 0;
-            memcpy(p,data + 4,4);
-
-            len = ( p[0] << 24 ) | (p[1] <<16) | (p[2] <<8) | (p[3] & 0x000000ff);
-
-            QFile file("ui/pic.jpg");
-            file.write(data+8,len);
-            file.close();
-            QString js = QString("setImg('%1')").arg("pic.jpg");
-            JFCWindow::getWeb()->page()->mainFrame()->evaluateJavaScript(js);
-            break;
-        }
-    }
-    */
+    m_net->readHead();
+    m_net->readDataLen();
+    m_net->readDataContent();
+    m_net->readEnd();
 }
 
 Cmd::Command& QDeviceCommand::createCommand(byte cmd[], byte *data, int len)
