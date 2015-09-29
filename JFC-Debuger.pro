@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     command/qdevicecommand.cpp \
     core/hfpgsql.cpp \
     command/qparse.cpp \
-    udp/qudpgroup.cpp
+    udp/qudpgroup.cpp \
+    net/qnetwork.cpp
 
 HEADERS  += jfcwindow.h \
     core/qhfwebview.h \
@@ -27,7 +28,8 @@ HEADERS  += jfcwindow.h \
     command/qdevicecommand.h \
     core/hfpgsql.h \
     command/qparse.h \
-    udp/qudpgroup.h
+    udp/qudpgroup.h \
+    net/qnetwork.h
 
 FORMS    += jfcwindow.ui
 

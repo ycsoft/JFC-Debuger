@@ -27,8 +27,6 @@ protected:
     void            mouseMoveEvent(QMouseEvent *evt);
 private:
     static QHFWebView      *m_web;
-    QHFWebView      *m_nav;
-
     bool            m_pressed;
     QPoint          m_pressPoint;
     QPoint          m_movePoint;
