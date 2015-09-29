@@ -22,11 +22,33 @@ Widget::~Widget()
 {
     delete ui;
 }
-
-void Widget::onNewConnection()
+void Widget::testSeria(QTcpSocket *tcp)
 {
-    qDebug()<<"New Connection";
-    QTcpSocket *tcp = m_server->nextPendingConnection();
+    const int  size = 128;
+    quint8 buf[size];
+    qint32 sz = 12;
+    const char *seria = "123456789ABC";
+    memset(buf,0,size);
+    buf[0] = 0x7F;
+    buf[1] = 0x55;
+    buf[2] = 0x40;
+    buf[3] = 0x00;
+    //数据长度
+    buf[4] = sz >> 8 & 0x000000ff;
+    buf[5] = sz & 0x000000ff;
+    //设备序列号
+    memcpy(buf+6,seria,strlen(seria));
+    //协议尾部
+    buf[ sz + 6 ] = 0x00;
+    buf[ sz + 7 ] = 0xBE;
+    buf[ sz + 8 ] = 0xEF;
+    //一次性向客户端写入一张73K图片的数据
+    tcp->write((char*)buf,sz + 9);
+    tcp->waitForBytesWritten();
+}
+
+void Widget::testPic( QTcpSocket *tcp)
+{
     int  size = 1024 *1024; //1M
     quint8 *buf = new quint8[size];
     QFile file("1.jpg");
@@ -58,8 +80,15 @@ void Widget::onNewConnection()
     buf[ sz + 9 ] = 0xBE;
     buf[ sz + 10 ] = 0xEF;
     //一次性向客户端写入一张73K图片的数据
-    tcp->write((char*)buf,sz + 8);
+    tcp->write((char*)buf,sz + 11);
     tcp->waitForBytesWritten();
     delete [] buf;
+}
 
+void Widget::onNewConnection()
+{
+    qDebug()<<"New Connection";
+    QTcpSocket *tcp = m_server->nextPendingConnection();
+    //testSeria(tcp);
+    testPic(tcp);
 }

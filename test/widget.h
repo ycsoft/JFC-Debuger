@@ -16,6 +16,9 @@ class Widget : public QWidget
 public:
     explicit Widget(QWidget *parent = 0);
     ~Widget();
+
+    void    testPic(QTcpSocket *);
+    void    testSeria(QTcpSocket *);
 public slots:
 
     void    onNewConnection();
