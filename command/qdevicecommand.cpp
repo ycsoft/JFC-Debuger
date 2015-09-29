@@ -26,8 +26,8 @@ void QDeviceCommand::connectDev(QString host, int port)
 
 void QDeviceCommand::connected()
 {
-    QMessageBox::information(0,LOCAL("JFC"),LOCAL("设备连接成功"),0);
     setSerial(LOCAL("已连接").toUtf8());
+    QMessageBox::information(0,LOCAL("JFC"),LOCAL("设备连接成功"),0);
 }
 
 Cmd::Command & QDeviceCommand::cmdFromRawData(const char *buf)
