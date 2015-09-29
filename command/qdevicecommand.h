@@ -9,6 +9,7 @@
 #define  SERIAL_LEN    12
 #define  STABLE_LEN     9
 #define  BUFFER_LEN    128
+#define  SOCK_BUF      4096
 
 #define  CmdLen( cmd )      ( \
                                 STABLE_LEN + \

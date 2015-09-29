@@ -55,6 +55,71 @@ Cmd::Command & QDeviceCommand::cmdFromRawData(const char *buf)
 
 void QDeviceCommand::onRead()
 {
+    QByteArray  alldata;
+
+    QByteArray  head    =   m_sock->read(4);
+    byte        type[2] =   {0x00,0x00};
+
+    type[0] = (byte)head[2];
+    type[1] = (byte)head[3];
+
+    alldata.append(head);
+
+    if ( type[0] == 0x00 || ( type[0] == 0x40 && type[1] == 0x00) )
+    {
+        QByteArray datalen = m_sock->read(2);
+        char buf[SOCK_BUF] = {0};
+
+        alldata.append(datalen);
+        int len = datalen[0] << 8 | datalen[1];
+        int rd  = 0;
+        while ( rd < len)
+        {
+            int it = m_sock->read(buf,len - rd);
+            rd += it;
+            alldata.append(buf);
+            memset(buf,0,SOCK_BUF);
+        }
+        //处理接收到的所有数据
+        Cmd::Command *cmd = &(cmdFromRawData(alldata.data()));
+        int type = QParse::ref().getCmdType(*cmd);
+
+        if( type == QParse::SerialType )
+        {
+                QString seria = QParse::ref().getSerial(*cmd);
+
+                m_seria = seria;
+                qDebug()<<"Device Code:"<<seria;
+                setSerial(seria);
+        }
+
+    }else
+    {
+
+        QByteArray datalen = m_sock->read(4);
+        char buf[SOCK_BUF] = {0};
+        QFile file("ui/pic.jpg");
+        file.open(QIODevice::WriteOnly);
+
+        alldata.append(datalen);
+        int len = datalen[0] << 24 | datalen[1] << 16
+                  | datalen[2] <<8 | datalen[3];
+        int rd  = 0;
+        while ( rd < len)
+        {
+            int it = m_sock->read(buf,len - rd);
+            rd += it;
+            alldata.append(buf);
+            file.write(buf,it);
+            memset(buf,0,SOCK_BUF);
+        }
+        file.close();
+        QString js = QString("setImg('%1')").arg("pic.jpg");
+        JFCWindow::getWeb()->page()->mainFrame()->evaluateJavaScript(js);
+    }
+
+
+/*
     char *data = m_sock->readAll().data();
     Cmd::Command *cmd = &(cmdFromRawData(data));
     int type = QParse::ref().getCmdType(*cmd);
@@ -87,6 +152,7 @@ void QDeviceCommand::onRead()
             break;
         }
     }
+    */
 }
 
 Cmd::Command& QDeviceCommand::createCommand(byte cmd[], byte *data, int len)
