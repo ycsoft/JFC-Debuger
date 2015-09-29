@@ -92,6 +92,7 @@ void QDeviceCommand::onRead()
 Cmd::Command& QDeviceCommand::createCommand(byte cmd[], byte *data, int len)
 {
     static Cmd::Command  command;
+//    static byte *pdel = NULL;
 
     command.cmd[0] = cmd[0];
     command.cmd[1] = cmd[1];
@@ -101,12 +102,13 @@ Cmd::Command& QDeviceCommand::createCommand(byte cmd[], byte *data, int len)
 
     if ( NULL != command.data )
     {
-        delete command.data;
+        delete [] command.data;
         command.data = NULL;
     }
     if ( len >= 0 )
     {
         command.data = new byte[len + SERIAL_LEN];
+//        pdel = command.data;
         memset(command.data,0,len+SERIAL_LEN);
         memcpy(command.data,m_seria.toLocal8Bit().data(),SERIAL_LEN);
         if ( len > 0)

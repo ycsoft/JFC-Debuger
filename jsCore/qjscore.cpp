@@ -98,8 +98,7 @@ void QJSCore::BaseAngle(QString angle)
     sprintf(cangle,"%7.3f",fang);
 
     angle = QString(cangle).replace(" ","0");
-    Cmd::Command  cmd = m_dev->createCommand(head,(byte*)angle.toLocal8Bit().data(),7);
-
+    Cmd::Command  &cmd = m_dev->createCommand(head,(byte*)angle.toLocal8Bit().data(),7);
     m_dev->sendCmd(cmd);
 }
 void QJSCore::NegAngle(QString angle)
@@ -113,7 +112,7 @@ void QJSCore::NegAngle(QString angle)
     sprintf(cangle,"%7.3",fang);
 
     angle = QString(cangle).replace(" ","0");
-    Cmd::Command  cmd = m_dev->createCommand(head,(byte*)angle.toLocal8Bit().data(),7);
+    Cmd::Command  &cmd = m_dev->createCommand(head,(byte*)angle.toLocal8Bit().data(),7);
     m_dev->sendCmd(cmd);
 }
 
