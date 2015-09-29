@@ -72,14 +72,16 @@ void QDeviceCommand::onRead()
 
         alldata.append(datalen);
         int len = datalen[0] << 8 | datalen[1];
-        int rd  = 0;
+        int rd  = m_sock->read(buf,len);
         while ( rd < len)
         {
+            m_sock->waitForReadyRead();
             int it = m_sock->read(buf,len - rd);
             rd += it;
             alldata.append(buf);
             memset(buf,0,SOCK_BUF);
         }
+        alldata.append( m_sock->read(3) );
         //处理接收到的所有数据
         Cmd::Command *cmd = &(cmdFromRawData(alldata.data()));
         int type = QParse::ref().getCmdType(*cmd);
@@ -108,12 +110,18 @@ void QDeviceCommand::onRead()
         while ( rd < len)
         {
             int it = m_sock->read(buf,len - rd);
+            m_sock->waitForReadyRead();
             rd += it;
             alldata.append(buf);
             file.write(buf,it);
             memset(buf,0,SOCK_BUF);
         }
         file.close();
+        rd = m_sock->read(buf,3);
+        if ( rd < 3 )
+        {
+            rd += m_sock->read(buf,3-rd);
+        }
         QString js = QString("setImg('%1')").arg("pic.jpg");
         JFCWindow::getWeb()->page()->mainFrame()->evaluateJavaScript(js);
     }
