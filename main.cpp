@@ -10,12 +10,6 @@
 
 using namespace std;
 
-union  data
-{
-    char c[4];
-    int  it;
-};
-
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);

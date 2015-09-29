@@ -47,8 +47,7 @@ void JFCWindow::registerObj()
 }
 void JFCWindow::loadFinish(bool)
 {
-    Cmd::Command   cmd;
-    cmd.data = (byte*)("Hello");
+
 }
 
 void JFCWindow::mousePressEvent(QMouseEvent *evt)

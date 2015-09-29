@@ -8,12 +8,8 @@ QUDPGroup::QUDPGroup(QObject *parent) : QObject(parent)
 {
     m_udp = new QUdpSocket(this);
 
-    m_udp->bind(UDP_PORT);
-
-//    m_udp->setSocketOption(QAbstractSocket::MulticastTtlOption);
+    m_udp->bind(UDP_PORT),QUdpSocket::ShareAddress;
     m_udp->joinMulticastGroup(QHostAddress(Group_Address));
-
-//    m_udp->writeDatagram("Hello JFC",QHostAddress(Group_Address),UDP_PORT);
     connect(m_udp,SIGNAL(readyRead()),this,SLOT(diagramReady()));
 }
 
