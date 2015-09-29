@@ -18,14 +18,16 @@ SOURCES += main.cpp\
     jsCore/qjscore.cpp \
     command/qdevicecommand.cpp \
     core/hfpgsql.cpp \
-    command/qparse.cpp
+    command/qparse.cpp \
+    udp/qudpgroup.cpp
 
 HEADERS  += jfcwindow.h \
     core/qhfwebview.h \
     jsCore/qjscore.h \
     command/qdevicecommand.h \
     core/hfpgsql.h \
-    command/qparse.h
+    command/qparse.h \
+    udp/qudpgroup.h
 
 FORMS    += jfcwindow.ui
 

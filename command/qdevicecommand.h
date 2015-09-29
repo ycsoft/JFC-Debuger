@@ -127,6 +127,8 @@ private:
     /// \param :设备序列号
     ///
     void            setSerial(QString s);
+
+    QString         m_seria;
 };
 
 #endif // QDEVICECOMMAND_H

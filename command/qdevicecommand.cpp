@@ -24,7 +24,7 @@ void QDeviceCommand::connectDev(QString host, int port)
 void QDeviceCommand::connected()
 {
     QMessageBox::information(0,LOCAL("JFC"),LOCAL("设备连接成功"),0);
-    setSerial(LOCAL("已连接"));
+    setSerial(LOCAL("已连接").toUtf8());
 }
 
 Cmd::Command & QDeviceCommand::cmdFromRawData(const char *buf)
@@ -64,6 +64,9 @@ void QDeviceCommand::onRead()
         case QParse::SerialType:
         {
             QString seria = QParse::ref().getSerial(*cmd);
+
+            m_seria = seria;
+            qDebug()<<"Device Code:"<<seria;
             setSerial(seria);
             break;
         }
@@ -95,15 +98,22 @@ Cmd::Command& QDeviceCommand::createCommand(byte cmd[], byte *data, int len)
     command.dataLen[0] = len >> 8;
     command.dataLen[1] = len & 0x00FF;
 
+
     if ( NULL != command.data )
     {
         delete command.data;
         command.data = NULL;
     }
-    if ( len > 0 )
+    if ( len >= 0 )
     {
-        command.data = new byte[len];
-        memcpy(command.data,data,len);
+        command.data = new byte[len + SERIAL_LEN];
+        memset(command.data,0,len+SERIAL_LEN);
+        memcpy(command.data,m_seria.toLocal8Bit().data(),SERIAL_LEN);
+        if ( len > 0)
+        {
+            memcpy(command.data+SERIAL_LEN,data,len);
+        }
+
     }
     return command;
 }
