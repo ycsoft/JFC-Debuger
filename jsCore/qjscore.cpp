@@ -7,6 +7,8 @@
 #include <QApplication>
 #include <QProcess>
 
+#define     TEST        1
+
 QJSCore::QJSCore(QObject *parent) : QObject(parent)
 {
     m_dev = new QDeviceCommand(this);
@@ -88,15 +90,20 @@ void QJSCore::connectDev(QString host, int port)
 void QJSCore::BaseAngle(QString angle)
 {
     qDebug()<<LOCAL("调整基准角。。。。。。")<<angle;
+    int len = angle.length();
     byte head[2] = BASE_TYPE;
-    Cmd::Command  cmd = m_dev->createCommand(head,(byte*)angle.toLocal8Bit().data());
+
+    Cmd::Command  cmd = m_dev->createCommand(head,(byte*)angle.toLocal8Bit().data(),len);
+    char buf[10] = {0};
+    memcpy(buf,(char*)cmd.data,5);
     m_dev->sendCmd(cmd);
 }
 void QJSCore::NegAngle(QString angle)
 {
     qDebug()<<LOCAL("调整NECK角。。。。。。")<<angle;
     byte head[2] = NEG_TYPE;
-    Cmd::Command  cmd = m_dev->createCommand(head,(byte*)angle.toLocal8Bit().data());
+    int  len = angle.length();
+    Cmd::Command  cmd = m_dev->createCommand(head,(byte*)angle.toLocal8Bit().data(),len);
     m_dev->sendCmd(cmd);
 }
 
@@ -104,6 +111,6 @@ void QJSCore::PicAcq()
 {
     qDebug()<<LOCAL("采集图像。。。。。。");
     byte head[2] = PIC_ACQ;
-    Cmd::Command cmd = m_dev->createCommand(head,NULL);
+    Cmd::Command cmd = m_dev->createCommand(head,NULL,0);
     m_dev->sendCmd(cmd);
 }
