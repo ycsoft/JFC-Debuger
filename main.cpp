@@ -16,5 +16,8 @@ int main(int argc, char *argv[])
     JFCWindow w;
     w.show();
 
+    QJSCore js;
+    js.BaseAngle("135");
+
     return a.exec();
 }

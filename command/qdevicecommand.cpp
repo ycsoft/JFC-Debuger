@@ -95,8 +95,8 @@ Cmd::Command& QDeviceCommand::createCommand(byte cmd[], byte *data, int len)
 
     command.cmd[0] = cmd[0];
     command.cmd[1] = cmd[1];
-    command.dataLen[0] = len >> 8;
-    command.dataLen[1] = len & 0x00FF;
+    command.dataLen[0] = (len+ SERIAL_LEN) >> 8;
+    command.dataLen[1] = (len+ SERIAL_LEN) & 0x00FF;
 
 
     if ( NULL != command.data )

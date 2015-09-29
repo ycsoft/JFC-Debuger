@@ -94,8 +94,7 @@ void QJSCore::BaseAngle(QString angle)
     byte head[2] = BASE_TYPE;
 
     Cmd::Command  cmd = m_dev->createCommand(head,(byte*)angle.toLocal8Bit().data(),len);
-    char buf[10] = {0};
-    memcpy(buf,(char*)cmd.data,5);
+
     m_dev->sendCmd(cmd);
 }
 void QJSCore::NegAngle(QString angle)
