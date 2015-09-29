@@ -112,13 +112,12 @@ void QDeviceCommand::onRead()
         alldata.append(datalen);
        quint32 len = datalen[0] << 24 | datalen[1] << 16 & 0x00ff0000
                   | datalen[2] <<8  & 0x0000ff00 | datalen[3] & 0x000000ff;
-        int rd  = m_sock->read(buf,len);
-
+        int rd  = m_sock->read(buf,SOCK_BUF);
         alldata.append(buf,rd);
         while ( rd < len)
         {
             m_sock->waitForReadyRead();
-            int it = m_sock->read(buf,len - rd);
+            int it = m_sock->read(buf,SOCK_BUF);
             rd += it;
             alldata.append(buf,it);
             memset(buf,0,SOCK_BUF);
