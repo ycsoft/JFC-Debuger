@@ -25,6 +25,7 @@ public slots:
     void    BaseAngle(QString angle);
     void    NegAngle(QString angle);
     void    PicAcq();
+    void    disConnect();
 
 
     void     msgBox(const QString &title,const QString &txt);

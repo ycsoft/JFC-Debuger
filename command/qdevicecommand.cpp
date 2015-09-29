@@ -149,3 +149,11 @@ void QDeviceCommand::sendCmd(const Cmd::Command &cmd)
     copyCmd(buf,cmd);
     m_sock->write(buf,CmdLen(&cmd));
 }
+
+void QDeviceCommand::closeDev()
+{
+    if ( m_sock->isOpen())
+    {
+        m_sock->close();
+    }
+}

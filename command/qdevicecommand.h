@@ -92,6 +92,8 @@ public:
     explicit        QDeviceCommand(QObject *parent = 0);
 
     Cmd::Command    &cmdFromRawData( const char *buf );
+
+    void            closeDev();
     ~QDeviceCommand() {}
     ///
     /// \brief createCommand

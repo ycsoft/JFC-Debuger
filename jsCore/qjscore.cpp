@@ -124,3 +124,7 @@ void QJSCore::PicAcq()
     Cmd::Command cmd = m_dev->createCommand(head,NULL,0);
     m_dev->sendCmd(cmd);
 }
+void QJSCore::disConnect()
+{
+    m_dev->closeDev();
+}
