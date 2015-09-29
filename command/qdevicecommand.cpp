@@ -147,5 +147,5 @@ void QDeviceCommand::sendCmd(const Cmd::Command &cmd)
 {
     char buf[BUFFER_LEN] = {0};
     copyCmd(buf,cmd);
-    m_sock->write(buf,cmd.dataLen[0] << 8 | cmd.dataLen[1]);
+    m_sock->write(buf,CmdLen(&cmd));
 }
