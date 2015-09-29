@@ -131,7 +131,7 @@ QByteArray QNetWork::readEnd()
     else if ( m_type == QParse::SerialType )
     {
         char seria[SERIAL_LEN + 1] = {0};
-        memcpy(seria,m_pack.data() + 4,SERIAL_LEN);
+        memcpy(seria,m_pack.data() + 6,SERIAL_LEN);
         QString js = QString("setDevCode('%1')").arg(seria);
         JFCWindow::getWeb()->page()->mainFrame()->evaluateJavaScript(js);
     }
