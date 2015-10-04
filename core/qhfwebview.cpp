@@ -7,7 +7,15 @@
 #include <QPalette>
 #include <QMouseEvent>
 #include <QWebSettings>
+#if( QT_VERSION > 0x040000)
+
+#include <QtWebKitWidgets/QWebFrame>
+
+#else
+
 #include <QWebFrame>
+
+#endif
 
 QHFWebView::QHFWebView(QWidget *parent) : QWebView(parent)
 {

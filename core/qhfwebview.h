@@ -2,8 +2,17 @@
 #define QHFWEBVIEW_H
 
 #include <QWidget>
+
+
+#if( QT_VERSION > 0x040000)
+
+#include <QtWebKitWidgets/QWebView>
+
+#else
+
 #include <QWebView>
 
+#endif
 class QHFWebView : public QWebView
 {
     Q_OBJECT
