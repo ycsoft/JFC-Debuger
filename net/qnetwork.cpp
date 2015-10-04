@@ -5,8 +5,19 @@
 
 #include <QDebug>
 #include <QFile>
+
+
+#if( QT_VERSION > 0x040000)
+
+#include <QtWebKitWidgets/QWebFrame>
+#include <QtWebKitWidgets/QWebView>
+
+#else
+
 #include <QWebView>
 #include <QWebFrame>
+
+#endif
 
 QNetWork::QNetWork(QObject *parent,QTcpSocket *sock) : QObject(parent),m_sock(sock)
 {
@@ -14,11 +25,13 @@ QNetWork::QNetWork(QObject *parent,QTcpSocket *sock) : QObject(parent),m_sock(so
     bdatalen  = false;
     bdataContent = false;
     bended = false;
+    bComplete = false;
 }
 
 QByteArray QNetWork::readHead()
 {
     QByteArray ret;
+    bComplete = false;
 
     if ( bhead )
     {
@@ -115,26 +128,29 @@ QByteArray QNetWork::readEnd()
     bdatalen = false;
     bdataContent = false;
     bended = false;
-    //保存图片
-    if ( m_type == QParse::PicData )
-    {
-        QFile file("ui/pic.jpg");
-        file.open(QIODevice::WriteOnly);
-        file.write(m_pack.data()+34,m_filelen);
-        file.close();
+    bComplete = true;
+//    //保存图片
+//    if ( m_type == QParse::PicData )
+//    {
+//        QFile file("ui/pic.jpg");
+//        file.open(QIODevice::WriteOnly);
+//        file.write(m_pack.data()+34,m_filelen);
+//        file.close();
 
-        QString js = QString("setImg('%1')").arg("pic.jpg");
+//        m_pack.clear();
+//        QString js = QString("setImg('%1')").arg("pic.jpg");
 
-        JFCWindow::getWeb()->page()->mainFrame()->evaluateJavaScript(js);
-    }
-    //设置序列号
-    else if ( m_type == QParse::SerialType )
-    {
-        char seria[SERIAL_LEN + 1] = {0};
-        memcpy(seria,m_pack.data() + 6,SERIAL_LEN);
-        QString js = QString("setDevCode('%1')").arg(seria);
-        JFCWindow::getWeb()->page()->mainFrame()->evaluateJavaScript(js);
-    }
+//        JFCWindow::getWeb()->page()->mainFrame()->evaluateJavaScript(js);
+//    }
+//    //设置序列号
+//    else if ( m_type == QParse::SerialType )
+//    {
+//        char seria[SERIAL_LEN + 1] = {0};
+//        memcpy(seria,m_pack.data() + 6,SERIAL_LEN);
+//        m_pack.clear();
+//        QString js = QString("setDevCode('%1')").arg(seria);
+//        JFCWindow::getWeb()->page()->mainFrame()->evaluateJavaScript(js);
+//    }
 
     return ret;
 }

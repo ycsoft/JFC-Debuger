@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network webkit
+QT       += core gui network webkitwidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -20,7 +20,10 @@ SOURCES += main.cpp\
     core/hfpgsql.cpp \
     command/qparse.cpp \
     udp/qudpgroup.cpp \
-    net/qnetwork.cpp
+    net/qnetwork.cpp \
+    command/qjfcprotocal.cpp \
+    command/qseriacmd.cpp \
+    command/qpicdatacmd.cpp
 
 HEADERS  += jfcwindow.h \
     core/qhfwebview.h \
@@ -29,13 +32,17 @@ HEADERS  += jfcwindow.h \
     core/hfpgsql.h \
     command/qparse.h \
     udp/qudpgroup.h \
-    net/qnetwork.h
+    net/qnetwork.h \
+    command/qjfcprotocal.h \
+    command/qseriacmd.h \
+    command/qpicdatacmd.h
 
 FORMS    += jfcwindow.ui
 
-#RESOURCES += \
-#    res.qrc
 INCLUDEPATH += "E:\Workspace\HF-Soft\libevent-2.0.22-stable\WIN32-Code"
 INCLUDEPATH += "E:\Workspace\HF-Soft\libevent-2.0.22-stable\include"
 INCLUDEPATH += "D:\PostgreSQL\9.3\include"
 LIBS += "D:\PostgreSQL\9.3\lib\libpq.lib"
+
+RESOURCES += \
+    resource.qrc

@@ -3,7 +3,7 @@
 #include "jsCore/qjscore.h"
 #include "udp/qudpgroup.h"
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
 #include <QDebug>
 
 #include <iostream>
@@ -15,6 +15,6 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     JFCWindow w;
-    w.show();
+    w.showMaximized();
     return a.exec();
 }

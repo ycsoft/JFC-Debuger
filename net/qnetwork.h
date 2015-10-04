@@ -15,6 +15,17 @@ public:
     QByteArray readDataLen();
     QByteArray readDataContent();
     QByteArray readEnd();
+
+    bool       isComplete()
+    {
+        return bComplete;
+    }
+
+    QByteArray  &getPacket()
+    {
+        return m_pack;
+    }
+
 signals:
 
 public slots:
@@ -29,6 +40,8 @@ private:
     bool            bdatalen;   //数据长度已读
     bool            bdataContent; //数据内容已读
     bool            bended;
+
+    bool            bComplete;
 
 };
 

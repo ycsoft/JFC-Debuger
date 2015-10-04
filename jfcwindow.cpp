@@ -2,8 +2,23 @@
 #include "core/qhfwebview.h"
 #include "command/qdevicecommand.h"
 
+#include <QDir>
+
 #include <QVBoxLayout>
+
+
+#if( QT_VERSION > 0x040000)
+
+#include <QtWebKitWidgets/QWebFrame>
+
+#else
+
 #include <QWebFrame>
+
+#endif
+
+
+#include <QDir>
 
 QHFWebView * JFCWindow::m_web = NULL;
 
@@ -11,8 +26,8 @@ JFCWindow::JFCWindow(QWidget *parent) :
     QWidget(parent)
 {
     setUpUi();
-    setWindowFlags( windowFlags()& ~Qt::WindowMaximizeButtonHint );
-    setMaximumHeight(800);
+//    setWindowFlags( windowFlags()& ~Qt::WindowMaximizeButtonHint );
+//    setMaximumHeight(800);
     resize(770,550);
     m_pressed = false;
 }
@@ -29,10 +44,12 @@ void JFCWindow::setUpUi()
 {
     QHBoxLayout *vlay = new QHBoxLayout(this);
 
-
     m_web = new QHFWebView(this);
-    m_web->load(QUrl("ui/connectdevice.html"));
+    m_web->setObjectName("webView");
+    QDir dir;
+    QString path = tr("file:///") + dir.currentPath() + "/ui/connectdevice.html";
 
+    m_web->load(QUrl(path));
     connect(m_web->page()->mainFrame(),SIGNAL(javaScriptWindowObjectCleared()),this,SLOT(registerObj()));
     connect(m_web,SIGNAL(loadFinished(bool)),this,SLOT(loadFinish(bool)));
 

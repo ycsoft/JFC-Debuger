@@ -14,6 +14,8 @@
 			// If you don't, Jcrop may not initialize properly
 			$(document).ready(function(){
 
+				setImg('res/img/test.png');
+				
 				$('#cropbox').Jcrop({
 					onChange: showPreview,
 					onSelect: showPreview
@@ -158,13 +160,26 @@ function ShowCords(c)
 				jQuery('#h').val(c.h);
 }
 
+function showDeg()
+{
+	$('#page-degree').css('display','block');
+	$("#page-connect").css("display","none");
+	$("#page-save").css("display","none");	
+}
+
 function setDevCode( code )
 {
 	$('header>p').html('设备编号: ' + code);	
 }
 function setImg( src )
-{
+{	
 	$('.imgproc img').attr('src',src);	
+	//$('#preview').attr('src',src);
+	
+	var image = new Image();
+	image.src = src;
+	var wid = image.width;
+	var hei = image.height;
 }
 </script>
 </head>
@@ -174,9 +189,9 @@ html,body {
 	overflow:hidden;
     /*FILTER: progid:DXImageTransform.Microsoft.Gradient(gradientType=0,startColorStr=##15A216,endColorStr=#fafafa);  
     background:-moz-linear-gradient(top,#15A216,#fafafa); 
-    background:-webkit-gradient(linear, 0% 0%, 0% 100%,from(#066), to(#fafafa)); 
+    background:-webkit-gradient(linear, 0% 0%, 0% 100%,from(#066), to(#fafafa)); */
     background-image: -webkit-gradient(linear,left bottom,left top,color-start(0, #15A216),color-stop(1, #fafafa));
-    filter:  progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#15A216', endColorstr='#fafafa'); 
+    /*filter:  progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#15A216', endColorstr='#fafafa'); 
     -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#15A216', endColorstr='#fafafa')";*/
 }
 div.label{
@@ -190,7 +205,7 @@ div.label{
 }
 div.row
 {
-	 position:relative;padding-top:10px;
+	 position:relative;padding-top:10px; width:100%; margin-bottom:2px
 }
 input[type=button]{
 	position:relative;
@@ -208,8 +223,8 @@ input[class=cord]{
 }
 #content{
 	position:absolute;
-	left:20%;
-	width:300px;
+	left:10%;
+	width:70%;
 	height:100%;
 	margin:100px 0px 0px 100px;
 }
@@ -221,7 +236,7 @@ input[class=cord]{
 	height:30px;
 	left:7px;
 	font-size:12px;
-	display:block;
+	display:inline-block;
 	background-color:#FF8000;
 	cursor:pointer;
 }
@@ -230,8 +245,8 @@ input[class=cord]{
 	border-radius:4px;
 	height:30px;
 	font-size:12px;
-	left:120px;
-	display:block;
+	left:20px;
+	display:inline-block;
 	background-color:#FF8000;
 	cursor:pointer;
 }
@@ -277,10 +292,14 @@ img.icon{
 div.imgproc{
 	position:absolute;
 	left:21%;
-	/*width:300px;*/
+	width:800px;
+	height:100%;
+	top:30px;
 	display:block;
-	height:100%;	
 }
+#cropbox{
+	width:800px; height:400px;
+	}
 button.cut{
 	position:relative;
 	border-radius:4px;
@@ -315,10 +334,10 @@ button.cut{
 </div>
 
 <div id="page-degree">
-<div class="row"><div class="label">base角度</div><input type="text" id="basedeg"></input></div>
-<div class="row" style="position:relative;padding-top:10px; left:10px"><button id="basebutton" class=" radus2 pure-button" value="运行到角度">运行到角度</button></div>
-<div class="row"><div class="label">nect角度</div><input type="text" id="negdeg"></input></div>
-<div class="row" style="position:relative;padding-top:10px; left:10px"><button id="negbutton" class=" radus2 pure-button" value="运行到角度">运行到角度</button></div>
+<div class="row"><div class="label">base角度</div><input type="text" id="basedeg"></input><button id="basebutton" class="radus2 pure-button" value="运行到角度">运行到角度</button></div>
+<!--div class="row" style="position:relative;padding-top:10px; left:0px"><button id="basebutton" class=" radus2 pure-button" value="运行到角度">运行到角度</button></div-->
+<div class="row"><div class="label">nect角度</div><input type="text" id="negdeg"></input><button id="negbutton" class=" radus2 pure-button" value="运行到角度">运行到角度</button></div>
+<!--div class="row" style="position:relative;padding-top:10px; left:0px"><button id="negbutton" class=" radus2 pure-button" value="运行到角度">运行到角度</button></div-->
 </div>
 
 <div id="page-save">
@@ -342,20 +361,20 @@ button.cut{
 </ul>
 </div>
 <div class="imgproc" align="center">
-<img src="res/img/test.png" id="cropbox" />
-<div style="position:relative; width:550px; margin-bottom:20px">
+<img id="cropbox"/>
+<div style="position:relative; width:550px; margin-bottom:20px;">
 <button class="cut pure-button" id="manul">手动截图</button>
 <hr style="position:relative; display:inline-block; margin-right:30px;width:1px; height:20px; top:15px; left:5px" />
 <div class="label">截图间隔</div>
 <input type="text" id="interval" style=" position:relative; width:50px; left:-20px;display:inline-block"></input>
 <button class="cut pure-button" id="auto">连续截图</button>
-<div style="width:100px; height:100px;overflow:hidden; display:inline-block">
-<img src="res/img/test.png" id="preview"/>
-</div>
 </div>
 <div style="width:450px">
 <strong>X:</strong><input type="text" class="cord" id="x"></input><strong>Y:</strong><input type="text" class="cord" id="y"></input>
 <strong>Width:</strong><input type="text" class="cord" id="w"></input><strong>Height:</strong><input type="text" class="cord" id="h"></input>
+</div>
+<div style="width:100px; height:100px;overflow:hidden; display:inline-block; position:absolute; bottom:80px; right:60px">
+<img src="res/img/test.png" id="preview"/>
 </div>
 </div>
 </body>

@@ -1,2 +1,41 @@
-<RCC/>
-
+<RCC>
+    <qresource prefix="/">
+        <file>ui/res/img/6225614_14007444959154.jpg</file>
+        <file>ui/res/img/btn_close_highlight.png</file>
+        <file>ui/res/img/btn_close_normal.png</file>
+        <file>ui/res/img/connect.png</file>
+        <file>ui/res/img/cut.png</file>
+        <file>ui/res/img/degree.png</file>
+        <file>ui/res/img/JFC.png</file>
+        <file>ui/res/img/numback.png</file>
+        <file>ui/res/img/save.png</file>
+        <file>ui/res/img/test.png</file>
+        <file>ui/res/buttons.css</file>
+        <file>ui/res/demos.css</file>
+        <file>ui/res/interface.js</file>
+        <file>ui/res/jPaginator-min.js</file>
+        <file>ui/res/jPaginator.css</file>
+        <file>ui/res/jquery-1.11.3.min.js</file>
+        <file>ui/res/jquery-multidownload.js</file>
+        <file>ui/res/jquery-ui.min.css</file>
+        <file>ui/res/jquery-ui.min.js</file>
+        <file>ui/res/jquery.cookie.js</file>
+        <file>ui/res/jquery.honey.pagination.js</file>
+        <file>ui/res/jquery.Jcrop.css</file>
+        <file>ui/res/jquery.Jcrop.js</file>
+        <file>ui/res/jquery.Jcrop.min.js</file>
+        <file>ui/res/jquery.min.js</file>
+        <file>ui/res/login.css</file>
+        <file>ui/res/login.js</file>
+        <file>ui/res/mac-dock.css</file>
+        <file>ui/res/nav.css</file>
+        <file>ui/res/pager.css</file>
+        <file>ui/res/test.css</file>
+        <file>ui/res/test.js</file>
+        <file>ui/connectdevice.html</file>
+        <file>ui/crop.html</file>
+        <file>ui/LeftNav.html</file>
+        <file>ui/tutorial2.html</file>
+        <file>ui/tutorial3.html</file>
+    </qresource>
+</RCC>

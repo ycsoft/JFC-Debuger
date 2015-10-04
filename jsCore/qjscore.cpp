@@ -7,7 +7,6 @@
 #include <QApplication>
 #include <QProcess>
 
-#define     TEST        1
 
 QJSCore::QJSCore(QObject *parent) : QObject(parent)
 {
@@ -82,7 +81,7 @@ void QJSCore::exit()
 
 void QJSCore::connectDev(QString host, int port)
 {
-    qDebug()<<LOCAL("连接设备。。。")<<"IP:"<<host<<" port:"<<port;
+    qDebug()<<tr("连接设备。。。")<<"IP:"<<host<<" port:"<<port;
 
     m_dev->connectDev(host, port);
 }
@@ -120,7 +119,7 @@ void QJSCore::PicAcq()
 {
     qDebug()<<LOCAL("采集图像。。。。。。");
     byte head[2] = PIC_ACQ;
-    Cmd::Command cmd = m_dev->createCommand(head,NULL,0);
+    Cmd::Command &cmd = m_dev->createCommand(head,NULL,0);
     m_dev->sendCmd(cmd);
 }
 void QJSCore::disConnect()
