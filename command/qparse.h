@@ -4,29 +4,26 @@
 #include "qdevicecommand.h"
 #include <QObject>
 
-class QParse : public QObject
-{
-    Q_OBJECT
-public:
+namespace  QParse {
 
-    ~QParse() {}
     enum        CmdType { SerialType, BaseAngleType,NegAngleType,
-                          PicAcq,PicData,UnKnown};
-    QString     getSerial( const Cmd::Command & cmd);
-    int         getCmdType( const Cmd::Command &cmd);
+                      PicAcq,PicData,UnKnown };
+}
 
-    static QParse& ref()
-    {
-        static QParse p;
-        return p;
-    }
+//class QParse : public QObject
+//{
+//    Q_OBJECT
+//public:
 
-signals:
+//    ~QParse() {}
+//    enum        CmdType { SerialType, BaseAngleType,NegAngleType,
+//                          PicAcq,PicData,UnKnown};
+//signals:
 
-public slots:
+//public slots:
 
-private:
-    explicit QParse(QObject *parent = 0);
-};
+//private:
+//    explicit QParse(QObject *parent = 0);
+//};
 
 #endif // QPARSE_H

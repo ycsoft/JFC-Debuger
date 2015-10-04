@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QTcpSocket>
+#include <QMutex>
 
 #define LOCAL(x)  QString::fromLocal8Bit(x)
 
@@ -135,6 +136,7 @@ private:
 
     QString         m_seria;
     QNetWork        *m_net;
+    QMutex          m_mutex;
 };
 
 #endif // QDEVICECOMMAND_H

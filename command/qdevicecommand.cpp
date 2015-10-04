@@ -3,9 +3,23 @@
 #include "jfcwindow.h"
 #include "net/qnetwork.h"
 #include "core/qhfwebview.h"
+#include "qjfcprotocal.h"
+#include "qseriacmd.h"
+#include "qpicdatacmd.h"
 
 #include <QFile>
+
+
+#if( QT_VERSION > 0x040000)
+
+#include <QtWebKitWidgets/QWebFrame>
+
+#else
+
 #include <QWebFrame>
+
+#endif
+
 #include <QMessageBox>
 #include <QDebug>
 
@@ -14,9 +28,9 @@ QDeviceCommand::QDeviceCommand(QObject *parent) : QObject(parent)
     m_sock = new QTcpSocket(this);
 
     m_net = new QNetWork(this,m_sock);
-
     connect(m_sock,SIGNAL(connected()),this,SLOT(connected()));
     connect(m_sock,SIGNAL(readyRead()),this,SLOT(onRead()));
+
 }
 
 void QDeviceCommand::connectDev(QString host, int port)
@@ -27,7 +41,10 @@ void QDeviceCommand::connectDev(QString host, int port)
 void QDeviceCommand::connected()
 {
     setSerial(LOCAL("已连接").toUtf8());
-    QMessageBox::information(0,LOCAL("JFC"),LOCAL("设备连接成功"),0);
+    QString js = tr("showDeg()");
+    JFCWindow::getWeb()->page()->mainFrame()->evaluateJavaScript(js);
+    //QMessageBox::information(0,LOCAL("JFC"),LOCAL("设备连接成功"),0);
+
 }
 
 Cmd::Command & QDeviceCommand::cmdFromRawData(const char *buf)
@@ -58,10 +75,41 @@ Cmd::Command & QDeviceCommand::cmdFromRawData(const char *buf)
 
 void QDeviceCommand::onRead()
 {
+    QJFCProtocal *jfcprot = NULL;
+
+    m_mutex.lock();
     m_net->readHead();
     m_net->readDataLen();
     m_net->readDataContent();
     m_net->readEnd();
+
+    if (! m_net->isComplete() )
+    {
+        m_mutex.unlock();
+        return;
+    }
+
+    QByteArray &pack = m_net->getPacket();
+    int type = QJFCProtocal::typeOfCmd(pack.data());
+
+    switch ( type) {
+    case QParse::SerialType:
+    {
+        jfcprot = new QSeriaCmd(this);
+        jfcprot->processPacket(pack);
+        break;
+    }
+    case QParse::PicData:
+    {
+        jfcprot = new QPicDataCmd(this);
+        jfcprot->processPacket(pack);
+    }
+    default:
+        break;
+    }
+
+
+    m_mutex.unlock();
 }
 
 Cmd::Command& QDeviceCommand::createCommand(byte cmd[], byte *data, int len)
